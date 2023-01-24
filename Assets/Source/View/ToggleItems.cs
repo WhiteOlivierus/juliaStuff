@@ -5,8 +5,6 @@ using UnityEngine.Events;
 
 public class ToggleItems : MonoBehaviour
 {
-    private Form form;
-
     [SerializeField]
     private UnityEvent endOfItemsEvent;
 
@@ -18,26 +16,18 @@ public class ToggleItems : MonoBehaviour
 
     private void Start()
     {
+        items.ForEach(item => item.SetActive(false));
+
         GameObject firstItem = items.First();
 
-        if (!firstItem.activeSelf)
+        if (firstItem != null)
         {
             firstItem.SetActive(true);
         }
-
-        form = firstItem.GetComponentInParent<Form>();
     }
 
     public void NextItem()
     {
-        bool validationResult = form.Validate();
-
-        if (!validationResult)
-        {
-            validationText.SetActive(true);
-            return;
-        }
-
         GameObject activeItem = items.FirstOrDefault(item => item.activeSelf);
 
         int nextItemId = items.IndexOf(activeItem) + 1;
@@ -57,10 +47,4 @@ public class ToggleItems : MonoBehaviour
             endOfItemsEvent.Invoke();
         }
     }
-}
-
-public class ValidationResult
-{
-    public bool isValid;
-    public string errorMessage;
 }

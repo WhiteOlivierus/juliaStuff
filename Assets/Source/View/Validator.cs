@@ -1,27 +1,12 @@
-﻿using System.Collections.Generic;
-using TMPro;
-using System.Linq;
-using UnityEngine;
-
-public class Validator : MonoBehaviour
+﻿public class StringValidator : IValidator<string>
 {
-    [SerializeField]
-    private List<ValidationRule<string>> rules;
-
-    private TextMeshPro textMeshPro;
-
-    private void Start()
+    public bool Validate(string value)
     {
-        textMeshPro = GetComponent<TextMeshPro>();
+        return !string.IsNullOrEmpty(value);
     }
+}
 
-    public bool Validate()
-    {
-        if (rules == null || rules.Count < 1)
-        {
-            return true;
-        }
-
-        return rules.All(rule => rule.Validate(() => textMeshPro.text));
-    }
+public interface IValidator<T>
+{
+    bool Validate(T value);
 }
