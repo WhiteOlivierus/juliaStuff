@@ -11,6 +11,8 @@ public class GSchemaManager : Singleton<GSchemaManager>
 
     public void SetThoughts(IEnumerable<string> thoughtsList) => gSchemaDto.Thoughts = thoughtsList;
 
+    public IEnumerable<string> GetThoughts() => gSchemaDto.Thoughts;
+
     public void SetBehavior(IEnumerable<string> behaviorList) => gSchemaDto.Behavior = behaviorList;
 
     public void SetConsequences(IEnumerable<string> consequencesList) => gSchemaDto.Consequences = consequencesList;

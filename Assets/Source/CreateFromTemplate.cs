@@ -1,7 +1,12 @@
+using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class CreateFromTemplate : MonoBehaviour
 {
+    [SerializeField]
+    private UnityEvent<TMP_InputField> onCreate;
+
     [SerializeField]
     private GameObject toCopy;
 
@@ -12,6 +17,11 @@ public class CreateFromTemplate : MonoBehaviour
 
     private void Start()
     {
+        if (toCopy != null)
+        {
+            toCopy.SetActive(false);
+        }
+
         if (parent == null)
         {
             parent = transform;
@@ -19,13 +29,13 @@ public class CreateFromTemplate : MonoBehaviour
 
         template = Instantiate(toCopy, parent);
         template.transform.SetSiblingIndex(1);
-        template.SetActive(false);
     }
 
     public void New()
     {
         GameObject templated = Instantiate(template, parent);
         templated.transform.SetSiblingIndex(1);
-        template.SetActive(true);
+        templated.SetActive(true);
+        onCreate.Invoke(templated.GetComponent<TMP_InputField>());
     }
 }
