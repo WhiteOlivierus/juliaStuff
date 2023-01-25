@@ -1,10 +1,13 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class CreateFromList : MonoBehaviour
 {
+    [SerializeField]
+    private UnityEvent onCreated;
+
     [SerializeField]
     private SerializableCallbackIEnumerable values;
 
@@ -16,7 +19,9 @@ public class CreateFromList : MonoBehaviour
 
     private GameObject template;
 
-    private void OnEnable()
+    private bool done;
+
+    private void Awake()
     {
         if (toCopy != null)
         {
@@ -36,7 +41,7 @@ public class CreateFromList : MonoBehaviour
 
     public void New()
     {
-        if (values == null)
+        if (done || values == null)
         {
             return;
         }
@@ -55,9 +60,8 @@ public class CreateFromList : MonoBehaviour
             templated.GetComponentInChildren<Text>().text = value;
             templated.SetActive(true);
         }
+
+        onCreated?.Invoke();
+        done = true;
     }
 }
-
-[Serializable]
-public class SerializableCallbackIEnumerable : SerializableCallback<IEnumerable<string>>
-{ }

@@ -1,19 +1,26 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class RadioBehavior : MonoBehaviour
 {
+    [SerializeField]
+    private UnityEvent<int> OnChange;
+
     private IList<Toggle> toggles;
 
-    private IList<bool> togglesState;
+    private Toggle activeToggle;
 
     private void OnEnable()
     {
         toggles = GetComponentsInChildren<Toggle>().ToList();
 
-        SetOneValue(0);
+        activeToggle = toggles.FirstOrDefault();
+        activeToggle.isOn = true;
+        int arg0 = GetIndex();
+        OnChange.Invoke(arg0);
 
         foreach (Toggle toggle in toggles)
         {
@@ -21,21 +28,23 @@ public class RadioBehavior : MonoBehaviour
         }
     }
 
-    private void SetOneValue(int index)
+    private int GetIndex()
     {
-        togglesState = Enumerable.Repeat(false, toggles.Count()).ToList();
-        togglesState[index] = true;
+        return toggles.IndexOf(activeToggle);
     }
 
     private void OnValueChanged(bool value)
     {
-        IList<bool> togglesNewState = toggles.Select(toggle => toggle.isOn).ToList();
+        if (!value)
+        {
+            activeToggle.SetIsOnWithoutNotify(true);
+            return;
+        }
 
-        int indexDifference = togglesNewState
-            .Select((x, y) => new { element = x, index = y += 1 })
-            .Where(z => togglesState.Contains(z.element))
-            .Select(s => s.index).FirstOrDefault();
+        activeToggle.SetIsOnWithoutNotify(false);
 
-        SetOneValue(indexDifference);
+        activeToggle = toggles.Where(toggle => toggle.isOn).FirstOrDefault();
+
+        OnChange.Invoke(GetIndex());
     }
 }

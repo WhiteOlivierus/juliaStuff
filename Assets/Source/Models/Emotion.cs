@@ -1,5 +1,6 @@
 ﻿public enum Emotion
 {
+    None,
     Happy,
     Angry,
     Anxious,
