@@ -18,6 +18,11 @@ public class SetStrings : MonoBehaviour
 
     public void AddTextInputField(TMP_InputField textInputField)
     {
+        if (textInputFields == null)
+        {
+            textInputFields = GetComponentsInChildren<TMP_InputField>().ToList();
+            return;
+        }
         textInputFields.Add(textInputField);
         textInputField.onValueChanged.AddListener(OnTextChanged);
     }
