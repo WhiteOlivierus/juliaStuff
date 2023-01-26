@@ -73,7 +73,6 @@ public class GSchemaManager : Singleton<GSchemaManager>
 
     public IEnumerable<string> GetThoughts()
     {
-        return new[] { "adf", "sdaf" };
         return gSchemaDto.Thoughts;
     }
 
@@ -89,10 +88,6 @@ public class GSchemaManager : Singleton<GSchemaManager>
 
     public string GetMainThought()
     {
-        if (gSchemaDto.Thoughts == null)
-        {
-            return string.Empty;
-        }
         return gSchemaDto.Thoughts.ToList()[gSchemaDto.MainThoughtId];
     }
 

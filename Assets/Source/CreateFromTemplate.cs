@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Serialization;
 
 public class CreateFromTemplate : MonoBehaviour
 {
@@ -8,18 +9,25 @@ public class CreateFromTemplate : MonoBehaviour
     private UnityEvent<TMP_InputField> onCreate;
 
     [SerializeField]
-    private GameObject toCopy;
+    private GameObject template;
 
     [SerializeField]
     private Transform parent;
 
-    private GameObject template;
+    [SerializeField]
+    private bool CreateOnStart = true;
+
+    private GameObject copy;
 
     private void Start()
     {
-        if (toCopy != null)
+        if (template != null)
         {
-            toCopy.SetActive(false);
+            template.SetActive(false);
+        }
+        else
+        {
+            Debug.LogError($"No template was set on {gameObject.name}");
         }
 
         if (parent == null)
@@ -27,15 +35,20 @@ public class CreateFromTemplate : MonoBehaviour
             parent = transform;
         }
 
-        template = Instantiate(toCopy, parent);
-        template.transform.SetSiblingIndex(1);
+        copy = Instantiate(template, parent);
+        copy.transform.SetSiblingIndex(1);
+
+        if (CreateOnStart)
+        {
+            New();
+        }
     }
 
     public void New()
     {
-        GameObject templated = Instantiate(template, parent);
-        templated.transform.SetSiblingIndex(1);
+        GameObject templated = Instantiate(copy, parent);
+        templated.transform.SetSiblingIndex(2);
         templated.SetActive(true);
-        onCreate.Invoke(templated.GetComponent<TMP_InputField>());
+        onCreate.Invoke(templated.GetComponentInChildren<TMP_InputField>());
     }
 }

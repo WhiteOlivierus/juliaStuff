@@ -2,49 +2,37 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.UI;
 
 public class RadioBehavior : MonoBehaviour
 {
     [SerializeField]
     private UnityEvent<int> OnChange;
 
-    private IList<Toggle> toggles;
+    private IList<Radio> radios;
 
-    private Toggle activeToggle;
-
-    private void OnEnable()
+    private void Start()
     {
-        toggles = GetComponentsInChildren<Toggle>().ToList();
+        radios = GetComponentsInChildren<Radio>().ToList();
 
-        activeToggle = toggles.FirstOrDefault();
-        activeToggle.isOn = true;
-        int arg0 = GetIndex();
-        OnChange.Invoke(arg0);
+        Radio activeRadio = radios.FirstOrDefault();
+        activeRadio.Set(true);
+        OnChange.Invoke(0);
 
-        foreach (Toggle toggle in toggles)
+        for (int i = 0; i < radios.Count; i++)
         {
-            toggle.onValueChanged.AddListener(OnValueChanged);
+            Radio radio = radios[i];
+            radio.index = i;
+            radio.OnClicked.AddListener(OnValueChanged);
         }
     }
 
-    private int GetIndex()
+    private void OnValueChanged(int value)
     {
-        return toggles.IndexOf(activeToggle);
-    }
-
-    private void OnValueChanged(bool value)
-    {
-        if (!value)
+        foreach (Radio radio in radios)
         {
-            activeToggle.SetIsOnWithoutNotify(true);
-            return;
+            radio.Set(false);
         }
-
-        activeToggle.SetIsOnWithoutNotify(false);
-
-        activeToggle = toggles.Where(toggle => toggle.isOn).FirstOrDefault();
-
-        OnChange.Invoke(GetIndex());
+        radios[value].Set(true);
+        OnChange.Invoke(value);
     }
 }
