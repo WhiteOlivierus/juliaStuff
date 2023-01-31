@@ -88,7 +88,7 @@ public class GSchemaManager : Singleton<GSchemaManager>
 
     public string GetMainThought()
     {
-        return gSchemaDto.Thoughts.ToList()[gSchemaDto.MainThoughtId];
+        return gSchemaDto.Thoughts.Any() ? gSchemaDto.Thoughts.ToList()[gSchemaDto.MainThoughtId] : string.Empty;
     }
 
     public int GetMainThoughtPercentage()

@@ -1,13 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class GrapplingHook : MonoBehaviour
 {
-    //rotation Z
-    // public float min_Z = 12f;
-    // public float max_Z = -12f;
-    // public float rotateSpeed = 5f;
     public GameObject bullet;
 
     public float bulletSpeed;
@@ -16,13 +10,15 @@ public class GrapplingHook : MonoBehaviour
 
     public Transform gunPositionPlayer;
     public Transform gunPositionEnemy;
-    
+
     public LineRenderer linePlayer;
     public LineRenderer lineEnemy;
 
     public SpringJoint2D spring;
 
     public bool hasShot;
+    public bool hasHit;
+    private GameObject bulletInstance;
 
     private void Start()
     {
@@ -30,46 +26,48 @@ public class GrapplingHook : MonoBehaviour
         lineEnemy.enabled = false;
         spring.enabled = false;
         hasShot = false;
+        hasHit = false;
     }
 
     private void Update()
     {
-        /*if (Input.GetMouseButtonDown(0))
+        if (mainThought == null)
         {
-            Shoot();
-        }*/
-
-        if (mainThought != null)
-        {
-            linePlayer.SetPosition(0, gunPositionPlayer.position);
-            linePlayer.SetPosition(1, mainThought.transform.position);
-
-            linePlayer.SetPosition(0, gunPositionPlayer.position);
-            linePlayer.SetPosition(1, mainThought.transform.position);
+            return;
         }
 
-      /*  if (Input.GetMouseButtonDown(1))
-        {
-            Release();
-        }*/
+        linePlayer.SetPosition(1, gunPositionPlayer.position);
 
+        if (!hasHit && bulletInstance != null)
+        {
+            linePlayer.SetPosition(0, bulletInstance.transform.position);
+        }
+        else
+        {
+            linePlayer.SetPosition(0, mainThought.transform.position);
+        }
     }
+
     public void Shoot()
     {
-       GameObject bulletInstance = Instantiate(bullet, gunPositionPlayer.position, Quaternion.identity);
+        bulletInstance = Instantiate(bullet, gunPositionPlayer.position, Quaternion.identity);
 
-       bulletInstance.GetComponent<Rigidbody2D>().AddForce(transform.up * bulletSpeed);
+        bulletInstance.GetComponent<Rigidbody2D>().AddForce(transform.up * bulletSpeed);
+        linePlayer.enabled = true;
 
-       hasShot = true;
+        hasShot = true;
+        hasHit = false;
     }
 
     public void SetLinePositionPlayer()
     {
-        if (hasShot == true)
+        if (!hasShot)
         {
-            linePlayer.SetPosition(0, gunPositionPlayer.position);
-            linePlayer.SetPosition(1, mainThought.transform.position);
+            return;
         }
+
+        linePlayer.SetPosition(0, gunPositionPlayer.position);
+        linePlayer.SetPosition(1, mainThought.transform.position);
     }
 
     public void SetLinePositionEnemy()
@@ -77,21 +75,20 @@ public class GrapplingHook : MonoBehaviour
         lineEnemy.SetPosition(0, gunPositionEnemy.position);
         lineEnemy.SetPosition(1, mainThought.transform.position);
     }
+
     public void TargetHit(GameObject hit)
     {
+        hasHit = true;
         mainThought = hit;
-        linePlayer.enabled = true;
         lineEnemy.enabled = true;
-        /*spring.enabled = true;
-        spring.connectedBody = mainThought.GetComponent<Rigidbody2D>();*/
     }
-   
-   public void Release()
-   {
+
+    public void Release()
+    {
+        hasShot = false;
+        hasHit = false;
         linePlayer.enabled = false;
         lineEnemy.enabled = false;
-        /*spring.enabled = false;*/
-        //mainThought.set kinematic. Houdt een coroutine bij die checked of die al bij het einde is gekomen.
         mainThought = null;
-   }
+    }
 }

@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class NoteObject : MonoBehaviour
@@ -11,63 +9,61 @@ public class NoteObject : MonoBehaviour
     public float normalThreshold = 0.25f;
     public float goodThreshold = 0.05f;
 
-    
-    // Start is called before the first frame update
-    void Start()
+    private void Update()
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        if(Input.GetKeyDown(keyToPress))
+        if (!Input.GetMouseButtonDown(0))
         {
-            if(canBePressed)
-            {
-                gameObject.SetActive(false);
+            return;
+        }
 
-                //GameManager.instance.NoteHit();
+        if (!canBePressed)
+        {
+            return;
+        }
 
-                if (Mathf.Abs(transform.position.y) > normalThreshold)
-                {
-                    Debug.Log("Hit");
-                    GameManager.instance.NormalHit();
-                    
-                }else if (Mathf.Abs(transform.position.y) > goodThreshold){
-                    Debug.Log("Good");
-                    GameManager.instance.GoodHit();
-                    
-                }
-                else{
-                    Debug.Log("Perfect");
-                    GameManager.instance.PerfectHit();
-                    
-                }
-            }
+        gameObject.SetActive(false);
+
+        if (Mathf.Abs(transform.position.y) > normalThreshold)
+        {
+            Debug.Log("Hit");
+            GameManager.instance.NormalHit();
+        }
+        else if (Mathf.Abs(transform.position.y) > goodThreshold)
+        {
+            Debug.Log("Good");
+            GameManager.instance.GoodHit();
+        }
+        else
+        {
+            Debug.Log("Perfect");
+            GameManager.instance.PerfectHit();
         }
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if(other.tag == "Activator")
+        if (!other.CompareTag("Activator"))
         {
-            canBePressed = true;
+            return;
         }
+
+        canBePressed = true;
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (gameObject.activeInHierarchy)
+        if (!gameObject.activeInHierarchy)
         {
-            if (other.tag == "Activator")
-            {
-                canBePressed = false;
-
-                GameManager.instance.NoteMissed();
-                
-            }
+            return;
         }
+
+        if (!other.CompareTag("Activator"))
+        {
+            return;
+        }
+
+        canBePressed = false;
+
+        GameManager.instance.NoteMissed();
     }
 }
-

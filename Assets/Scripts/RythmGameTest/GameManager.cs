@@ -1,13 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public enum BattleState { START, ARGUMENT, PREATTACK, RYTHMATTACK, ENDATTACK, WIN, LOSE }
-
 public class GameManager : MonoBehaviour
 {
-
     public BattleState state;
 
     public AudioSource theMusic;
@@ -21,7 +16,7 @@ public class GameManager : MonoBehaviour
 
     public GameObject argumentCanvas;
 
-    public static GameManager instance; 
+    public static GameManager instance;
 
     public int currentScore;
     public int scorePerNote = 100;
@@ -39,7 +34,6 @@ public class GameManager : MonoBehaviour
     public Text scoreText;
     public Text multiplierText;
 
-    private bool canCreateArgument;
     public GameObject playerArgument;
     public GameObject enemyArgument;
 
@@ -58,54 +52,48 @@ public class GameManager : MonoBehaviour
     public GameObject losePanel;
 
     private bool canAttack = false;
-    // Start is called before the first frame update
 
-    void Start()
+    private void Start()
     {
         state = BattleState.START;
         SetupGame();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        if(canCreateArgument)
+        switch (state)
         {
-            CreateArgument();
-        }
-        if (state == BattleState.PREATTACK)
-        {
-            Attack();
-        }
-       
-        if(state == BattleState.RYTHMATTACK)
-        {
-            StartCoroutine(RythmGame());
-        }
+            case BattleState.ARGUMENT:
+                playerScript.onArgumentCreated.AddListener(CreateArgument);
+                state = BattleState.WAITINGFORARGUMENT;
+                break;
 
-        if (rythmGameEnded)
-        {
-            state = BattleState.ENDATTACK;
-        }
+            case BattleState.WAITINGFORARGUMENT:
+                break;
 
-        if(state == BattleState.ENDATTACK)
-        {
-            PullBack();
-            if (mainthoughtCanMove)
-            {
+            case BattleState.PREATTACK:
+                playerScript.onArgumentCreated.RemoveListener(CreateArgument);
+                playerScript.Disable(true);
+                Attack();
+                break;
+
+            case BattleState.RYTHMATTACK:
+                RythmGame();
+                PullBack();
+                break;
+
+            case BattleState.ENDATTACK:
                 SetPositionMainthought();
-            }
-            
-        }
+                playerScript.Disable(false);
+                break;
 
-        if(state == BattleState.WIN)
-        {
-            winPanel.SetActive(true);
-        }
+            case BattleState.WIN:
+                winPanel.SetActive(true);
+                break;
 
-        if (state == BattleState.LOSE)
-        {
-            losePanel.SetActive(true);
+            case BattleState.LOSE:
+                losePanel.SetActive(true);
+                break;
         }
     }
 
@@ -114,7 +102,6 @@ public class GameManager : MonoBehaviour
         instance = this;
         currentMultiplier = 1;
         canAttack = false;
-        canCreateArgument = true;
         rythmObjectHolder.SetActive(false);
         rythmGameEnded = false;
         argumentCanvas.SetActive(false);
@@ -123,58 +110,57 @@ public class GameManager : MonoBehaviour
         losePanel.SetActive(false);
 
         state = BattleState.ARGUMENT;
-
     }
 
     public void CreateArgument()
     {
-        if (playerScript.argumentCreated == true)
-        {
-            Instantiate(playerArgument, playerGrappler.transform);
-            Instantiate(enemyArgument, enemyGrappler.transform);
-            //theGrapplingHook.hasShot = true;
-            state = BattleState.PREATTACK;
-        }
+        Instantiate(playerArgument, playerGrappler.transform);
+        Instantiate(enemyArgument, enemyGrappler.transform);
+        state = BattleState.PREATTACK;
     }
 
     public void Attack()
     {
-        if (Input.GetMouseButtonDown(0) && theGrapplingHook.hasShot!= true)
+        if (!Input.GetMouseButtonDown(0) || theGrapplingHook.hasShot == true)
         {
-            theGrapplingHook.Shoot();
-            
-            state = BattleState.RYTHMATTACK;                   
+            return;
         }
+
+        theGrapplingHook.Shoot();
+
+        state = BattleState.RYTHMATTACK;
     }
 
-    IEnumerator RythmGame()
+    private void RythmGame()
     {
-        yield return new WaitForSeconds(2f);
         rythmObjectHolder.SetActive(true);
-        startPlaying = true;
-        theBeatScroller.hasStarted = true;        
+        theBeatScroller.hasStarted = true;
         theMusic.Play();
     }
 
     public void PullBack()
     {
-        if (Input.GetMouseButtonDown(1))
+        if (!Input.GetMouseButtonDown(0))
         {
-            theGrapplingHook.Release();
-            rythmGameEnded = false;
-            mainthoughtCanMove = true;
+            return;
         }
+
+        theGrapplingHook.Release();
+        rythmObjectHolder.SetActive(false);
+        theBeatScroller.hasStarted = false;
+        theMusic.Stop();
+        state = BattleState.ENDATTACK;
     }
 
     public void NoteHit()
     {
         Debug.Log("Hit on time");
 
-        if(currentMultiplier - 1 < multiplierThresholds.Length)
+        if (currentMultiplier - 1 < multiplierThresholds.Length)
         {
             multiplierTracker++;
 
-            if(multiplierThresholds[currentMultiplier - 1]<= multiplierTracker)
+            if (multiplierThresholds[currentMultiplier - 1] <= multiplierTracker)
             {
                 multiplierTracker = 0;
                 currentMultiplier++;
@@ -185,11 +171,10 @@ public class GameManager : MonoBehaviour
 
         //currentScore += scorePerNote * currentMultiplier;
         scoreText.text = "Score " + currentScore;
-        
+
         rythmObjectHolder.SetActive(false);
         rythmGameEnded = true;
         Debug.Log("Is at end");
-        
     }
 
     public void NormalHit()
@@ -216,7 +201,6 @@ public class GameManager : MonoBehaviour
         NoteHit();
     }
 
-
     public void NoteMissed()
     {
         Debug.Log("Missed note");
@@ -232,7 +216,6 @@ public class GameManager : MonoBehaviour
     {
         moveTheMainThought.OperateMainthought();
         Debug.Log("Is WORKING");
-        mainthoughtCanMove = true;
-        
+        state = BattleState.ARGUMENT;
     }
 }

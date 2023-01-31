@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 
 public class GSchemaDto
 {
@@ -6,13 +7,13 @@ public class GSchemaDto
 
     public IEnumerable<Feeling> Feelings { get; set; }
 
-    public IEnumerable<string> Thoughts { get; set; }
+    public IEnumerable<string> Thoughts { get; set; } = Enumerable.Empty<string>();
 
     public IEnumerable<string> Behavior { get; set; }
 
     public IEnumerable<string> Consequences { get; set; }
 
-    public int MainThoughtId { get; set; }
+    public int MainThoughtId { get; set; } = 0;
 
     public int MainThougthPercentage { get; set; }
 

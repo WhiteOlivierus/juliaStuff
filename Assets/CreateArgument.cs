@@ -1,50 +1,44 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class CreateArgument : MonoBehaviour
 {
     public GameObject argumentPanel;
     private SpriteRenderer spriteRenderer;
+
     [SerializeField]
     private Color highlightColour;
-    public bool canCreateArgument;
-    public bool argumentCreated;
+
     private Color baseColour;
 
-    public KeyCode keyToPress;
+    private Collider2D collider;
 
-    // Start is called before the first frame update
+    public UnityEvent onArgumentCreated;
+
     private void Start()
     {
-        //argumentPanel.SetActive(false);
-        canCreateArgument = true;
-        argumentCreated = false;
+        collider = GetComponent<Collider2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnMouseOver()
     {
-        if (Input.GetKeyDown(keyToPress))
-        {
-            argumentCreated = false;
-            if (canCreateArgument)
-            {
-                HighLight();
-                argumentPanel.SetActive(true);
-            }
-        }
-        if (Input.GetKeyUp(keyToPress))
-        {
-            turnOnPannel();
-        }
+        HighLight();
+    }
 
-        if(argumentCreated)
-        {
-            argumentPanel.SetActive(false);
-        }
+    private void OnMouseExit()
+    {
+        spriteRenderer.color = baseColour;
+    }
 
+    private void OnMouseDown()
+    {
+        argumentPanel.SetActive(true);
+    }
+
+    private void OnMouseUp()
+    {
+        TurnOnPannel();
     }
 
     public void HighLight()
@@ -53,24 +47,19 @@ public class CreateArgument : MonoBehaviour
         spriteRenderer.color = highlightColour;
     }
 
-    //  What happens when you open one of the thoughts
-    public void turnOnPannel()
+    public void TurnOnPannel()
     {
-        //Check if the new thought bubble is clicked
-        //Open popup window
-        //argumentPanel.SetActive(true);
-        //close the controller panel
-        //Stop game time
-        //Time.timeScale = 0f;
         spriteRenderer.color = baseColour;
-        canCreateArgument = false;
-    } 
+    }
 
     public void CloseButton()
     {
-        //argumentPanel.SetActive(false);
-        canCreateArgument = true;
-        argumentCreated = true;
-        //close the controller panel
+        onArgumentCreated.Invoke();
+        argumentPanel.SetActive(false);
+    }
+
+    public void Disable(bool enabled)
+    {
+        collider.enabled = !enabled;
     }
 }
