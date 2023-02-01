@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class CreateFromList : MonoBehaviour
@@ -12,20 +13,25 @@ public class CreateFromList : MonoBehaviour
     private SerializableCallbackIEnumerable values;
 
     [SerializeField]
-    private GameObject toCopy;
+    private GameObject template;
 
     [SerializeField]
     private Transform parent;
 
-    private GameObject template;
+    private GameObject copy;
 
     private bool done;
 
     private void Awake()
     {
-        if (toCopy != null)
+        template.SetActive(false);
+    }
+
+    private void Start()
+    {
+        if (template != null)
         {
-            toCopy.SetActive(false);
+            template.SetActive(false);
         }
 
         if (parent == null)
@@ -33,8 +39,8 @@ public class CreateFromList : MonoBehaviour
             parent = transform;
         }
 
-        template = Instantiate(toCopy, parent);
-        template.transform.SetSiblingIndex(1);
+        copy = Instantiate(template, parent);
+        copy.transform.SetSiblingIndex(1);
 
         New();
     }
@@ -55,7 +61,7 @@ public class CreateFromList : MonoBehaviour
 
         foreach (string value in strings)
         {
-            GameObject templated = Instantiate(template, parent);
+            GameObject templated = Instantiate(copy, parent);
             templated.transform.SetSiblingIndex(1);
             templated.GetComponentInChildren<Text>().text = value;
             templated.SetActive(true);
