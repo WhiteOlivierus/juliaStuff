@@ -30,6 +30,11 @@ public class Singleton<T> : MonoBehaviour where T : Singleton<T>
         }
     }
 
+    private void Awake()
+    {
+        DontDestroyOnLoad(this);
+    }
+
     private static T Init()
     {
         if (applicationIsQuitting)
