@@ -20,7 +20,6 @@ public class Grappler : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
-   
 
         if (Input.GetMouseButtonDown(0))
         {
@@ -38,4 +37,6 @@ public class Grappler : MonoBehaviour
             _lineRenderer.enabled = false;
         }
     }
+
+   
 }

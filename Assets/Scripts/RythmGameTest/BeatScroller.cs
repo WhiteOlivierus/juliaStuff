@@ -15,6 +15,7 @@ public class BeatScroller : MonoBehaviour
     {
         //how fast it's moving per second. How many units it's moving is our beatTempo/ by 60
         beatTempo = beatTempo / 60f;
+        
     }
 
     // Update is called once per frame
@@ -23,12 +24,14 @@ public class BeatScroller : MonoBehaviour
         if(!hasStarted)
         {
             //Starting the game with any key press
-            if(Input.anyKeyDown)
+            /*if (Input.anyKeyDown)
             {
                 hasStarted = true;
-            }else{
-                transform.position -= new Vector3(0f, beatTempo * Time.deltaTime, 0f);
-            }
+            }*/
+        }
+        else
+        {
+            transform.position -= new Vector3(0f, beatTempo * Time.deltaTime, 0f);
         }
     }
 }

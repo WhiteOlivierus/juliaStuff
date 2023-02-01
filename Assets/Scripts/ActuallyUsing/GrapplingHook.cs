@@ -14,56 +14,83 @@ public class GrapplingHook : MonoBehaviour
 
     public GameObject mainThought;
 
-    public Transform gunPosition;
-
-    public LineRenderer line;
+    public Transform gunPositionPlayer;
+    public Transform gunPositionEnemy;
+    
+    public LineRenderer linePlayer;
+    public LineRenderer lineEnemy;
 
     public SpringJoint2D spring;
 
+    public bool hasShot;
+
     private void Start()
     {
-        line.enabled = false;
+        linePlayer.enabled = false;
+        lineEnemy.enabled = false;
         spring.enabled = false;
+        hasShot = false;
     }
 
     private void Update()
     {
-        if(Input.GetMouseButtonDown(0))
+        /*if (Input.GetMouseButtonDown(0))
         {
             Shoot();
-        }
+        }*/
 
-        if(mainThought != null)
+        if (mainThought != null)
         {
-            line.SetPosition(0, gunPosition.position);
-            line.SetPosition(1, mainThought.transform.position);
+            linePlayer.SetPosition(0, gunPositionPlayer.position);
+            linePlayer.SetPosition(1, mainThought.transform.position);
+
+            linePlayer.SetPosition(0, gunPositionPlayer.position);
+            linePlayer.SetPosition(1, mainThought.transform.position);
         }
 
-        if(Input.GetMouseButtonDown(1))
+      /*  if (Input.GetMouseButtonDown(1))
         {
             Release();
+        }*/
+
+    }
+    public void Shoot()
+    {
+       GameObject bulletInstance = Instantiate(bullet, gunPositionPlayer.position, Quaternion.identity);
+
+       bulletInstance.GetComponent<Rigidbody2D>().AddForce(transform.up * bulletSpeed);
+
+       hasShot = true;
+    }
+
+    public void SetLinePositionPlayer()
+    {
+        if (hasShot == true)
+        {
+            linePlayer.SetPosition(0, gunPositionPlayer.position);
+            linePlayer.SetPosition(1, mainThought.transform.position);
         }
     }
 
-    private void Shoot()
+    public void SetLinePositionEnemy()
     {
-       GameObject bulletInstance = Instantiate(bullet, gunPosition.position, Quaternion.identity);
-
-       bulletInstance.GetComponent<Rigidbody2D>().AddForce(transform.up * bulletSpeed);
+        lineEnemy.SetPosition(0, gunPositionEnemy.position);
+        lineEnemy.SetPosition(1, mainThought.transform.position);
     }
-
     public void TargetHit(GameObject hit)
     {
         mainThought = hit;
-        line.enabled = true;
-        spring.enabled = true;
-        spring.connectedBody = mainThought.GetComponent<Rigidbody2D>();
+        linePlayer.enabled = true;
+        lineEnemy.enabled = true;
+        /*spring.enabled = true;
+        spring.connectedBody = mainThought.GetComponent<Rigidbody2D>();*/
     }
    
-   void Release()
+   public void Release()
    {
-        line.enabled = false;
-        spring.enabled = false;
+        linePlayer.enabled = false;
+        lineEnemy.enabled = false;
+        /*spring.enabled = false;*/
         //mainThought.set kinematic. Houdt een coroutine bij die checked of die al bij het einde is gekomen.
         mainThought = null;
    }

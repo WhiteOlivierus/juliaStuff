@@ -1,0 +1,82 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3826812786800775281
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3826812786800775287}
+  - component: {fileID: 3826812786800775286}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3826812786800775287
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3826812786800775281}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3826812786800775286
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3826812786800775281}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 441ec8de51d2941439212217a24f5a0b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  state: 0
+  theMusic: {fileID: 0}
+  player: {fileID: 0}
+  playerScript: {fileID: 0}
+  startPlaying: 0
+  theBeatScroller: {fileID: 0}
+  argumentCanvas: {fileID: 0}
+  currentScore: 0
+  scorePerNote: 100
+  scorePerGoodNote: 125
+  scorePerPerfectNote: 150
+  hitEffect: {fileID: 3336534097306106041, guid: 2fff8ff979910f64691a82c5e6cfde16, type: 3}
+  missEffect: {fileID: 8102359272720045977, guid: 21838ab6df1dd6f458b2777927c3e9ad, type: 3}
+  goodEffect: {fileID: 7273156195310420456, guid: 7b4c49d7cae7d1c4c9f35c460d517d5d, type: 3}
+  perfectEffect: {fileID: 7783859129743150285, guid: 145fac170201a914281cce5ca8bc093e, type: 3}
+  scoreEffectPosition: {fileID: 0}
+  rythmObjectHolder: {fileID: 0}
+  rythmGameEnded: 0
+  currentMultiplier: 1
+  multiplierTracker: 0
+  multiplierThresholds: 040000000800000010000000
+  scoreText: {fileID: 0}
+  multiplierText: {fileID: 0}
+  playerArgument: {fileID: 8733536727767144818, guid: e891df53efdc74548bb2cc756f61cc2a, type: 3}
+  enemyArgument: {fileID: 8733536727767144818, guid: 10d135f2212f7ec4bbc8074b23e8cba6, type: 3}
+  theGrapplingHook: {fileID: 0}
+  playerGrappler: {fileID: 0}
+  enemyGrappler: {fileID: 0}
+  moveTheMainThought: {fileID: 0}
+  mainThought: {fileID: 0}
+  mainthoughtCanMove: 0
+  normalPosition: {x: 0, y: -2, z: 0}
+  goodPosition: {x: 0, y: -4, z: 0}
+  perfectPosition: {x: 0, y: -6, z: 0}
+  winPanel: {fileID: 0}
+  losePanel: {fileID: 0}
